@@ -1,0 +1,106 @@
+/* นำเข้า Tailwind CSS เวอร์ชัน 4 เข้ามาใช้งานในโปรเจกต์ */
+@import "tailwindcss";
+
+/* กำหนดตัวแปรสีพื้นฐานของเว็บ (โทนดำสนิท #050505 และตัวอักษรขาวนวล #f4f4f5) */
+:root {
+  --background: #050505;
+  --foreground: #f4f4f5;
+}
+
+/* เชื่อมตัวแปรสีและฟอนต์เข้ากับระบบของ Tailwind CSS */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* ตั้งค่าพื้นฐานของหน้าเว็บทั้งหมด */
+body {
+  background-color: #050505; /* พื้นหลังสีดำเกือบสนิท */
+  color: #f4f4f5;            /* สีข้อความหลัก */
+  overflow-x: hidden;        /* ป้องกันไม่ให้หน้าเว็บเลื่อนซ้าย-ขวาเกินขอบจอ */
+}
+
+/* ---------------------------------------------------------
+   1. พื้นหลังลายตารางวิศวกรรม (IT Blueprint Grid)
+   สร้างเส้นตารางขนาด 40x40 พิกเซล สีขาวจางๆ (ความโปร่งแสง 5%)
+--------------------------------------------------------- */
+.bg-cyber-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
+
+/* ---------------------------------------------------------
+   2. อนิเมชันเปิดตัว (เลื่อนขึ้น + ค่อยๆ ชัดขึ้น)
+--------------------------------------------------------- */
+@keyframes revealUp {
+  0% {
+    opacity: 0;                  /* เริ่มต้น: มองไม่เห็น */
+    transform: translateY(24px); /* เริ่มต้น: อยู่ต่ำกว่าตำแหน่งจริง 24px */
+    filter: blur(4px);           /* เริ่มต้น: เบลอนิดๆ */
+  }
+  100% {
+    opacity: 1;                  /* จบ: ชัดเจน 100% */
+    transform: translateY(0);    /* จบ: กลับมาอยู่ตำแหน่งปกติ */
+    filter: blur(0);             /* จบ: หายเบลอ */
+  }
+}
+
+/* คลาสสำหรับเรียกใช้อนิเมชัน revealUp (forwards = เล่นจบแล้วค้างท่าสุดท้ายไว้) */
+.animate-reveal {
+  opacity: 0;
+  animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* คลาสหน่วงเวลา (Delay) เพื่อให้แต่ละส่วนทยอยโผล่ขึ้นมาทีละขั้น */
+.delay-100 { animation-delay: 100ms; } /* รอ 0.1 วินาที */
+.delay-200 { animation-delay: 200ms; } /* รอ 0.2 วินาที */
+.delay-300 { animation-delay: 300ms; } /* รอ 0.3 วินาที */
+.delay-400 { animation-delay: 400ms; } /* รอ 0.4 วินาที */
+
+/* ---------------------------------------------------------
+   3. เอฟเฟกต์ Glitch (ตัวอักษรสั่นแบบดิจิทัลเวลาเอาเมาส์ชี้)
+--------------------------------------------------------- */
+@keyframes glitch-anim {
+  0% { transform: translate(0); }
+  20% { transform: translate(-3px, 2px); }  /* กระตุกไปซ้าย-ล่าง */
+  40% { transform: translate(-3px, -2px); } /* กระตุกไปซ้าย-บน */
+  60% { transform: translate(3px, 2px); }   /* กระตุกไปขวา-ล่าง */
+  80% { transform: translate(3px, -2px); }  /* กระตุกไปขวา-บน */
+  100% { transform: translate(0); }         /* กลับมาตรงกลาง */
+}
+
+/* ทำงานเฉพาะตอนเอาเมาส์ไปชี้ (:hover) พร้อมเพิ่มเงาซ้อนสีขาว-เทา */
+.glitch-hover:hover {
+  animation: glitch-anim 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+  text-shadow: 2px 0 #ffffff, -2px 0 #71717a;
+}
+
+/* ---------------------------------------------------------
+   4. เส้นเลเซอร์สแกนวิ่งผ่านการ์ดโปรเจกต์จากบนลงล่าง
+--------------------------------------------------------- */
+@keyframes scanline {
+  0% { top: -10%; opacity: 0; }   /* เริ่มเหนือขอบบนของการ์ด */
+  50% { opacity: 1; }             /* สว่างชัดตรงกลางการ์ด */
+  100% { top: 110%; opacity: 0; } /* ทะลุเลยขอบล่างของการ์ด */
+}
+
+/* สั่งให้เส้นสแกนทำงานเฉพาะตอนเอาเมาส์ชี้ที่การ์ดแม่ (.group:hover) */
+.group:hover .animate-scanline {
+  animation: scanline 1.6s linear infinite;
+}
+
+/* ---------------------------------------------------------
+   5. เคอร์เซอร์สี่เหลี่ยมกระพริบในกล่อง Terminal
+--------------------------------------------------------- */
+@keyframes blink {
+  0%, 49% { opacity: 1; }   /* ครึ่งวินาทีแรก: แสดง */
+  50%, 100% { opacity: 0; } /* ครึ่งวินาทีหลัง: ซ่อน */
+}
+
+.cursor-blink {
+  animation: blink 1s infinite; /* กระพริบวนซ้ำทุกๆ 1 วินาที */
+}
